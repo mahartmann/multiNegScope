@@ -133,7 +133,7 @@ if __name__=="__main__":
 
     parser.add_argument('--bert_model', type=str,
                         default='small_bert',
-                        choices=['bert-base-multilingual-cased', 'bert-base-uncased', 'small_bert', 'xlm-roberta-base'],
+                        choices=['bert-base-multilingual-cased', 'bert-base-cased', 'small_bert', 'xlm-roberta-base'],
                         help="The pre-trained encoder used to encode the entities of the analogy")
     parser.add_argument('--tokenizer', type=str,
                         default='bert-base-multilingual-cased',
