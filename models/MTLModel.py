@@ -103,9 +103,10 @@ class MTLModel(nn.Module):
                 self.train()
 
                 # batch to device
+                logging.info('Moving input to {}'.format(self.device))
                 for key, val in batch.items():
                     val.to(self.device)
-                print(val.device)
+                logging.info('Moved input to {}'.format(val.device))
 
                 # clear gradients
                 self.zero_grad()
