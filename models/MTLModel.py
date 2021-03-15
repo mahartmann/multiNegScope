@@ -215,7 +215,7 @@ class MTLModel(nn.Module):
         return results
 
     def save(self, outpath, optimizer):
-        outpath = '/'.join([outpath.split('/')[:-1], 'model.pkl'])
+        outpath = '/'.join(outpath.split('/')[:-1] + ['model.pkl'])
         torch.save({
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
