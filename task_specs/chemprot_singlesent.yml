@@ -4,6 +4,6 @@ splits:
 - train
 - dev
 - test
-dataset: gad
+dataset: chemprot_singlesent
 split_seqs: False
 max_seq_len: 128
