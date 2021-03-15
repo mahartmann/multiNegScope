@@ -107,7 +107,7 @@ def main(args):
 
 
 
-    model = MTLModel(checkpoint='small_bert', device=device, tasks=tasks, padding_label_idx=padding_label)
+    model = MTLModel(checkpoint=args.bert_model, device=device, tasks=tasks, padding_label_idx=padding_label)
 
     # get optimizer
     optimizer = get_optimizer(model, lr=args.lr, eps=args.eps, decay=args.decay)
