@@ -41,7 +41,7 @@ class MTLModel(nn.Module):
             self.encoder = BertModel(bert_config)
         else:
             self.encoder = BertModel.from_pretrained(pretrained_model_name_or_path=checkpoint)
-        self.encoder.to(device)
+
         self.hidden_size = self.encoder.config.hidden_size
         self.device = device
         self.padding_label_idx = padding_label_idx
@@ -64,13 +64,17 @@ class MTLModel(nn.Module):
         headline = '############# Model Arch of MTL Model #############'
         logger.info('\n{}\n{}\n'.format(headline, self))
         logger.info("Total number of params: {}".format(sum([p.nelement() for p in self.parameters() if p.requires_grad])))
-
+        self.to(device)
 
 
     def forward(self, task, input_ids, attention_mask,  labels=None):
         # feed input ids through transformer
+        logging.info(input_ids.device)
+        logging.info(attention_mask.device)
+        logging.info(self.encoder.device)
         encoded_output = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
         # access the last hidden states
+
         last_hidden_states = encoded_output['last_hidden_state']
         # feed the last hidden state throuhh the task specific output layers. Pooling, etc and loss computation is handled by those
         loss, logits = self.output_layers[task.task_id](last_hidden_states, labels)
@@ -101,6 +105,7 @@ class MTLModel(nn.Module):
                 # batch to device
                 for key, val in batch.items():
                     val.to(self.device)
+                print(val.device)
 
                 # clear gradients
                 self.zero_grad()
