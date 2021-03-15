@@ -195,7 +195,7 @@ class MTLModel(nn.Module):
                     test_results = self.evaluate_on_dev(data_loader=test_dataloaders[task.task_id], task=task)
                     test_score, test_report, test_predictions = test_results['score'], None, test_results['predictions']
                     # dump to file
-                    dump_json(fname=os.path.join(outdir, 'test_preds_{}.json'.format(epoch)),
+                    dump_json(fname=os.path.join(outdir, 'test_preds_{}_{}.json'.format(task.dataset, epoch)),
                               data={'f1': test_score, 'report': test_report, 'predictions': test_predictions})
 
 
