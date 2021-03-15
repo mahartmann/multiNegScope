@@ -5,6 +5,13 @@ from sklearn.metrics import classification_report
 import metrics
 
 
+def batch_to_device(batch, device):
+    moved_batch = {}
+    for key, val in batch.items():
+        moved_val = val.to(device)
+        moved_batch[key] = moved_val
+    return moved_batch
+
 def evaluate_seq_labeling(data_loader, model, task):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     device = torch.device(device)
@@ -14,8 +21,7 @@ def evaluate_seq_labeling(data_loader, model, task):
 
     for step, batch in enumerate(data_loader):
         # batch to device
-        for key, val in batch.items():
-            val.to(device)
+        batch = batch_to_device(batch, device)
 
         # perform forward pass
         with torch.no_grad():
@@ -56,7 +62,7 @@ def evaluate_seq_classification(data_loader, model, task):
 
     for step, batch in enumerate(data_loader):
         # batch to device
-        batch.to(device)
+        batch = batch_to_device(batch, device)
 
         # perform forward pass
         with torch.no_grad():

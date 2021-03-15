@@ -22,6 +22,13 @@ from util import dump_json
 logger = logging.getLogger(__name__)
 
 
+def batch_to_device(batch, device):
+    moved_batch = {}
+    for key, val in batch.items():
+        moved_val = val.to(device)
+        moved_batch[key] = moved_val
+    return moved_batch
+
 def print_steps(ts):
     s = ''
     for key, val in ts.items():
@@ -69,9 +76,6 @@ class MTLModel(nn.Module):
 
     def forward(self, task, input_ids, attention_mask,  labels=None):
         # feed input ids through transformer
-        logging.info(input_ids.device)
-        logging.info(attention_mask.device)
-        logging.info(self.encoder.device)
         encoded_output = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
         # access the last hidden states
 
@@ -102,20 +106,9 @@ class MTLModel(nn.Module):
 
                 self.train()
 
-
-                def batch_to_device(batch, device):
-                    moved_batch = {}
-                    for key, val in batch.items():
-                        moved_val = val.to(device)
-                        moved_batch[key] = moved_val
-                    return moved_batch
-
                 # batch to device
-                logging.info('Moving input to {}'.format(self.device))
 
                 batch = batch_to_device(batch, self.device)
-                for key, val in batch.items():
-                    logging.info('Moved input to {}'.format(val.device))
 
                 # clear gradients
                 self.zero_grad()
@@ -189,7 +182,7 @@ class MTLModel(nn.Module):
                         if save_best:
                             #save model
                             logger.info('Saving model after epoch {} as best model to {}'.format(epoch, os.path.join(outdir, 'best_model')))
-                            self.save(os.path.join(outdir, 'best_model/model_{}.pt'.format(epoch)))
+                            self.save(os.path.join(outdir, 'best_model/model_{}.pt'.format(epoch)), optimizer)
 
 
 
@@ -209,7 +202,7 @@ class MTLModel(nn.Module):
         if not save_best:
             # save model
             logger.info('Saving model after epoch {} to {}'.format(epoch, os.path.join(outdir, 'model_{}.pt'.format(epoch))))
-            self.save(os.path.join(outdir, 'model_{}.pt'.format(epoch)))
+            self.save(os.path.join(outdir, 'model_{}.pt'.format(epoch)), optimizer)
 
 
     def evaluate_on_dev(self, data_loader, task):
@@ -221,7 +214,10 @@ class MTLModel(nn.Module):
             results = evaluate_seq_classification(data_loader, self, task)
         return results
 
-    def save(self, outpath):
+    def save(self, outpath, optimizer):
         outpath = '/'.join(outpath.split('/')[:-1])
-        self.save_pretrained(outpath)
+        torch.save({
+            'model_state_dict': self.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+        }, outpath)
 
