@@ -49,7 +49,7 @@ class RelClassificationDataset(Dataset):
 
         if self.label_map is None:
             # get all labels in the dataset
-            all_labels = list(set(list(itertools.chain.from_iterable([example.label for example in examples]))))
+            all_labels = list(set([example.label for example in examples]))
             # add special labels
             all_labels.sort()
             self.label_map = {label: idx for idx, label in enumerate(all_labels)}
@@ -62,7 +62,12 @@ class RelClassificationDataset(Dataset):
 
 
             labels.append(self.label_map[example.label])
+            print(tokenizer.vocab_size)
             tokenized_seq = tokenizer.encode_plus(text=example.seq,  padding='longest', max_length=self.max_seq_len)
+            for elm in tokenized_seq['input_ids']:
+                if elm > 28996:
+                    for tid, t in zip(tokenized_seq['input_ids'], tokenizer.convert_ids_to_tokens(tokenized_seq['input_ids'])):
+                        print(tid, t)
             inputs.append(tokenized_seq)
 
             if ex_index < 5:

@@ -76,6 +76,7 @@ class MTLModel(nn.Module):
 
     def forward(self, task, input_ids, attention_mask,  labels=None):
         # feed input ids through transformer
+        print(self.encoder.embeddings.word_embeddings.weight.shape)
         encoded_output = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
         # access the last hidden states
 

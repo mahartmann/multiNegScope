@@ -63,11 +63,11 @@ def main(args):
 
 
     def get_data(task, split, config, tokenizer):
-        if task.dataset == 'gad':
+        if task.dataset in ['gad', 'biorelex', 'chemprot_singlesent']:
             data = RelClassificationDataset(read_relation_classification_examples(
                     os.path.join(config.get('Files', 'preproc_data'), '{}_{}.jsonl'.format(task.dataset, split))),
                 tokenizer=tokenizer, max_seq_len=task.max_seq_len)
-        elif task.dataset in ['iula', 'french']:
+        elif task.dataset in ['iula', 'french', 'bio']:
             data = NegScopeDataset(
                 read_examples(
                     os.path.join(config.get('Files', 'preproc_data'), '{}_{}.jsonl'.format(task.dataset, split))),
@@ -136,14 +136,14 @@ if __name__=="__main__":
                         choices=['bert-base-multilingual-cased', 'bert-base-cased', 'small_bert', 'xlm-roberta-base'],
                         help="The pre-trained encoder used to encode the entities of the analogy")
     parser.add_argument('--tokenizer', type=str,
-                        default='bert-base-multilingual-cased',
+                        default='bert-base-cased',
                         help="The tokenizer")
     parser.add_argument('--config',
                         default='../preprocessing/config.cfg')
     parser.add_argument('--task_spec',
                         default='../task_specs', help='Directory with task specifications')
     parser.add_argument('--tasks', type=str,
-                        help="Yaml file specifying the training/testing tasks", default='gad')
+                        help="Yaml file specifying the training/testing tasks", default='chemprot_singlesent')
     parser.add_argument('--outdir', type=str,
                         help="output path", default='checkpoints')
     parser.add_argument('--logfile', type=str,
