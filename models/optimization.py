@@ -1,5 +1,6 @@
 import transformers
 from transformers import AdamW
+from .bert_optim import Adamax
 
 def get_scheduler(optimizer, scheduler: str, warmup_steps: int, t_total: int):
     """
@@ -24,15 +25,19 @@ def get_scheduler(optimizer, scheduler: str, warmup_steps: int, t_total: int):
 
 
 
-def get_optimizer(model, lr, eps, decay):
-    no_decay = ['bias', 'LayerNorm.weight']
-    optimizer_grouped_parameters = [
-        {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
-         'weight_decay': decay},
-        {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
-    ]
-    optimizer = AdamW(optimizer_grouped_parameters,
-                      lr=lr,  # args.learning_rate - default is 5e-5, our notebook had 2e-5
-                      eps=eps  # args.adam_epsilon  - default is 1e-8.
-                      )
+def get_optimizer(optimizer_name, model, lr, eps, decay):
+    if optimizer_name == 'adamw':
+        no_decay = ['bias', 'LayerNorm.weight']
+        optimizer_grouped_parameters = [
+            {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+             'weight_decay': decay},
+            {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
+        ]
+        optimizer = AdamW(optimizer_grouped_parameters,
+                          lr=lr,  # args.learning_rate - default is 5e-5, our notebook had 2e-5
+                          eps=eps  # args.adam_epsilon  - default is 1e-8.
+                          )
+    elif optimizer_name == 'adamx':
+        A
+
     return optimizer

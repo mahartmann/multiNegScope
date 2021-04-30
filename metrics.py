@@ -100,9 +100,7 @@ def compute_pcs(predicts, labels, label_mapper, dataset):
     for predict, label in zip(predicts, labels):
         predict, label = trim_and_convert(predict, label, label_mapper,dataset)
         if predict == label:
-
             tp += 1
-
     return tp/len(predicts)
 
 def compute_scope_p(predicts, labels, label_mapper, dataset):
@@ -238,26 +236,6 @@ def compute_p_r_f_multi(predicts, labels, label_mapper, dataset):
     else:
         return f['macro avg']['f1-score']
 
-def compute_p_r_f_subset(predict, labels, label_mapper, dataset):
-    """
-    computed prf average scores over a subset of labelset depending on the dataset
-    """
-    predict_filtered = []
-    gold_filtered = []
-    if dataset == 'chemprot' or dataset == 'chemprotsilverspan1':
-        excluded_label = 'false'
-    elif dataset == 'ddirelations' or dataset == 'ddirelationssilverspan1':
-        excluded_label = 'DDI-false'
-    gold_filtered = [labels[i] for  i, elm in enumerate(labels) if label_mapper[elm] != excluded_label]
-    predict_filtered = [predict[i] for i, elm in enumerate(labels) if label_mapper[elm] != excluded_label]
-    assert len(predict_filtered) == len(gold_filtered)
-    label_strings = []
-    label_idxs = []
-    for key, val in label_mapper.tok2ind.items():
-        if key != excluded_label:
-            label_strings.append(key)
-            label_idxs.append(val)
-    return predict_filtered, gold_filtered, label_idxs, label_strings
 
 def compute_p_r_f_multi_report(predicts, labels, label_mapper, dataset):
     label_strings = []

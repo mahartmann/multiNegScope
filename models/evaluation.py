@@ -48,8 +48,13 @@ def evaluate_seq_labeling(data_loader, model, task):
             cropped_preds.extend(final_predict)
             cropped_golds.extend(final_golds)
 
-    score = metrics.compute_pcs(cropped_preds, cropped_golds, task.reverse_label_map, dataset=task.dataset)
-    results = {'score': score, 'predictions': cropped_preds, 'results': None}
+    pcs = metrics.compute_pcs(cropped_preds, cropped_golds, task.reverse_label_map, dataset=task.dataset)
+    f1 = metrics.compute_scope_prf(predicts=cropped_preds,labels=cropped_golds,label_mapper=task.reverse_label_map,dataset=task.dataset, metric='f')
+    prec =   metrics.compute_scope_prf(predicts=cropped_preds,labels=cropped_golds,label_mapper=task.reverse_label_map,dataset=task.dataset, metric='p')
+    rec =  metrics.compute_scope_prf(predicts=cropped_preds,labels=cropped_golds,label_mapper=task.reverse_label_map,dataset=task.dataset, metric='r')
+
+    report = {'f1': f1, 'p': prec, 'r': rec}
+    results = {'score': f1, 'predictions': cropped_preds, 'results': report}
     return results
 
 
