@@ -85,10 +85,10 @@ class MTLModel(nn.Module):
         return loss, logits
 
 
-    def fit(self, tasks, optimizer, scheduler, train_dataloader, dev_dataloaders, test_dataloaders, epochs, evaluation_step, save_best, outdir, predict):
+    def fit(self, tasks, optimizer, scheduler, gradient_accumulation_steps, train_dataloader, dev_dataloaders, test_dataloaders, epochs, evaluation_step, save_best, outdir, predict):
 
         # get lr schedule
-        total_steps = len(train_dataloader) * epochs
+        total_steps = (len(train_dataloader)/gradient_accumulation_steps) * epochs
 
         loss_values = []
         global_step = 0
@@ -97,6 +97,8 @@ class MTLModel(nn.Module):
         epoch = -1
 
         task_specific_forward = {t.task_id: 0 for t in tasks}
+
+        accumulated_steps = 0
         for epoch in range(epochs):
             logger.info('Starting epoch {}'.format(epoch))
 
@@ -104,14 +106,12 @@ class MTLModel(nn.Module):
 
             for step, batch in enumerate(train_dataloader):
 
+
                 self.train()
 
                 # batch to device
 
                 batch = batch_to_device(batch, self.device)
-
-                # clear gradients
-                self.zero_grad()
 
                 task_id=batch['task_id'][0]
 
@@ -123,6 +123,9 @@ class MTLModel(nn.Module):
 
                 total_loss += loss.item()
 
+                # scale the loss before doing backward pass
+                loss = loss/gradient_accumulation_steps
+
                 # perform backward pass
                 loss.backward()
 
@@ -130,30 +133,35 @@ class MTLModel(nn.Module):
                 torch.nn.utils.clip_grad_norm_(self.parameters(), 1.0)  # Update parameters and take a step using the computed gradient.
                 # The optimizer dictates the "update rule"--how the parameters are
                 # modified based on their gradients, the learning rate, etc.
+                accumulated_steps += 1
 
-                # take a step and update the model
-                optimizer.step()
-
-                # Update the learning rate.
-                scheduler.step()
-                optimizer.zero_grad()
-
-                global_step += 1
                 # keep track of the task specific steps
                 task_specific_forward[task_id.item()] += 1
 
+                #print(accumulated_steps)
+                if accumulated_steps > 0 and accumulated_steps% gradient_accumulation_steps == 0:
+                    #logger.info('Performing update after accumulating {} batches'.format(accumulated_steps))
+                    # take a step and update the model
+                    optimizer.step()
 
-                # evaluate on dev
-                if step > 0 and step % evaluation_step == 0:
-                    self.eval()
-                    dev_results = self.evaluate_on_dev(data_loader=dev_dataloaders[0], task=tasks[0])
-                    logger.info('Epoch {}, global step {}/{}\ttask_specific steps: {}\ttrain loss: {:.5f}\t dev score: {}'.format(epoch,
-                                                                                                         global_step,
-                                                                                                         total_steps,
-                                                                                                        print_steps(
-                                                                                                        task_specific_forward),
-                                                                                                        total_loss/step,
-                                                                                                        dev_results['score']))
+                    # Update the learning rate.
+                    scheduler.step()
+                    optimizer.zero_grad()
+                    global_step += 1
+
+                    accumulated_steps = 0
+
+                    # evaluate on dev
+                    if global_step > 0 and global_step % evaluation_step == 0:
+                        self.eval()
+                        dev_results = self.evaluate_on_dev(data_loader=dev_dataloaders[0], task=tasks[0])
+                        logger.info('Epoch {}, global step {}/{}\ttask_specific forward passes: {}\ttrain loss: {:.5f}\t dev score: {}'.format(epoch,
+                                                                                                             global_step,
+                                                                                                             total_steps,
+                                                                                                            print_steps(
+                                                                                                            task_specific_forward),
+                                                                                                            total_loss/step,
+                                                                                                            dev_results['score']))
 
 
             # Calculate the average loss over the training data.

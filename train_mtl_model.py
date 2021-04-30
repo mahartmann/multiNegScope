@@ -103,12 +103,15 @@ def main(args):
 
 
     # get lr schedule
-    total_steps = len(mtl_dataset) * args.epochs
+    total_steps = (len(mtl_dataset)/args.grad_accumulation_steps) * args.epochs
     warmup_steps = args.warmup_frac * total_steps
+    logger.info('Bs_per_device={}, gradient_accumulation_steps={} --> effective bs= {}'.format(args.bs, args.grad_accumulation_steps, args.bs*args.grad_accumulation_steps))
+    logger.info('Total steps: {}'.format(total_steps))
     logger.info('Scheduler: {} with {} warmup steps'.format('warmuplinear', warmup_steps))
+
     scheduler = get_scheduler(optimizer, scheduler='warmuplinear', warmup_steps=warmup_steps, t_total=total_steps)
 
-    model.fit(tasks, optimizer, scheduler, train_dataloader=mtl_train_dataloader,
+    model.fit(tasks, optimizer, scheduler, gradient_accumulation_steps=args.grad_accumulation_steps, train_dataloader=mtl_train_dataloader,
               dev_dataloaders=dev_dataloaders, test_dataloaders=test_dataloaders, epochs=args.epochs,
               evaluation_step=args.evaluation_steps, save_best=args.save_best, outdir=outdir, predict=args.predict)
 
@@ -131,7 +134,7 @@ if __name__=="__main__":
     parser.add_argument('--task_spec',
                         default='../task_specs', help='Directory with task specifications')
     parser.add_argument('--tasks', type=str,
-                        help="Yaml file specifying the training/testing tasks", default='chemprot_singlesent,iula')
+                        help="Yaml file specifying the training/testing tasks", default='bioconv')
     parser.add_argument('--test_tasks', type=str,
                         help="Yaml file specifying the additional testing tasks for zero-shot experiments. By default, the output layer of the first training task is used for prediction.", default='nubes')
     parser.add_argument('--outdir', type=str,
@@ -146,7 +149,7 @@ if __name__=="__main__":
                         help="Max seq length")
     parser.add_argument('--epochs', type=int, default=2,
                         help="Number of training epochs")
-    parser.add_argument('--evaluation_steps', type=int, default=2,
+    parser.add_argument('--evaluation_steps', type=int, default=6,
                         help="Evaluate every n training steps")
     parser.add_argument("--save_best", type=bool_flag, default=True)
     parser.add_argument("--predict", type=bool_flag, default=True)
