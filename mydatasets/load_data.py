@@ -1,5 +1,6 @@
 from mydatasets.NegScopeDataset import NegScopeDataset, read_examples
 from mydatasets.RelClassificationDataset import RelClassificationDataset, read_relation_classification_examples
+import os
 
 def get_data(task, split, config, tokenizer):
     if task.dataset_type == 'relclassification':

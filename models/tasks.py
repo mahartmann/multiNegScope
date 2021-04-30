@@ -1,8 +1,9 @@
 import yaml
 
 class Task():
-    def __init__(self, type, dataset,  dropout_prob, splits, max_seq_len, split_seqs=False):
+    def __init__(self, type, dataset,  dataset_type, dropout_prob, splits, max_seq_len, split_seqs=False):
         self.dataset=dataset
+        self.dataset_type = dataset_type
         self.splits = splits
         self.task_type = type
         self.hidden_dropout_prob = dropout_prob
@@ -22,6 +23,6 @@ class Task():
 
 def load_task(fname):
     task_def = yaml.safe_load(open(fname))
-    task = Task(type=task_def['task_type'], dropout_prob=task_def['dropout_prob'], splits=task_def['splits'], dataset=task_def['dataset'],
+    task = Task(type=task_def['task_type'], dropout_prob=task_def['dropout_prob'], splits=task_def['splits'], dataset_type=task_def['dataset_type'], dataset=task_def['dataset'],
          split_seqs=task_def['split_seqs'], max_seq_len=task_def['max_seq_len'])
     return task
