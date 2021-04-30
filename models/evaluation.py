@@ -53,7 +53,7 @@ def evaluate_seq_labeling(data_loader, model, task):
     prec =   metrics.compute_scope_prf(predicts=cropped_preds,labels=cropped_golds,label_mapper=task.reverse_label_map,dataset=task.dataset, metric='p')
     rec =  metrics.compute_scope_prf(predicts=cropped_preds,labels=cropped_golds,label_mapper=task.reverse_label_map,dataset=task.dataset, metric='r')
 
-    report = {'f1': f1, 'p': prec, 'r': rec}
+    report = {'f1': f1, 'p': prec, 'r': rec, 'pcs':pcs}
     results = {'score': f1, 'predictions': cropped_preds, 'results': report}
     return results
 
