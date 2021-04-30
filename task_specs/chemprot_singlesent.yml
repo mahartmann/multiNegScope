@@ -1,9 +1,10 @@
 task_type: seqclassification
+dataset_type: relclassification
+dataset: chemprot_singlesent
 dropout_prob: 0.1
 splits:
 - train
 - dev
 - test
-dataset: chemprot_singlesent
 split_seqs: False
 max_seq_len: 128

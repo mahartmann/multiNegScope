@@ -9,13 +9,13 @@ import logging
 from models.optimization import get_optimizer, get_scheduler
 from util import dump_json, bool_flag
 from mydatasets.MultiTaskDataset import MultiTaskDataset, MultiTaskBatchSampler
-from mydatasets.RelClassificationDataset import RelClassificationDataset, read_relation_classification_examples
+from mydatasets.load_data import get_data
 import configparser
 from transformers import BertTokenizer
 import os
 from util import create_logger
 from models.tokenization import setup_customized_tokenizer
-from mydatasets.NegScopeDataset import NegScopeDataset, read_examples
+
 from torch.utils.data import DataLoader
 import argparse
 import uuid
@@ -57,22 +57,11 @@ def main(args):
         tasks.append(task)
 
 
+
     train_datasets = {}
     dev_dataloaders = {}
     test_dataloaders = {}
 
-
-    def get_data(task, split, config, tokenizer):
-        if task.dataset in ['gad', 'biorelex', 'chemprot_singlesent']:
-            data = RelClassificationDataset(read_relation_classification_examples(
-                    os.path.join(config.get('Files', 'preproc_data'), '{}_{}.jsonl'.format(task.dataset, split))),
-                tokenizer=tokenizer, max_seq_len=task.max_seq_len)
-        elif task.dataset in ['iula', 'french', 'bio']:
-            data = NegScopeDataset(
-                read_examples(
-                    os.path.join(config.get('Files', 'preproc_data'), '{}_{}.jsonl'.format(task.dataset, split))),
-                tokenizer=tokenizer, max_seq_len=task.max_seq_len, split_seqs=task.split_seqs)
-        return data
 
     for task_id, task in enumerate(tasks):
         task.set_task_id(task_id)
@@ -93,7 +82,6 @@ def main(args):
             test_data.set_task_id(task_id)
             test_dataloader = DataLoader(test_data, shuffle=False, batch_size=8, collate_fn=test_data.collate_fn)
             test_dataloaders[task_id] = test_dataloader
-
 
 
     padding_label = train_datasets[0].padding_label
@@ -127,7 +115,7 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(
-        description='Train SentenceBert with analogy data')
+        description='Train MTL model')
     parser.add_argument('--seed', type=int, default=42,
                         help="Random seed")
 
@@ -143,7 +131,9 @@ if __name__=="__main__":
     parser.add_argument('--task_spec',
                         default='../task_specs', help='Directory with task specifications')
     parser.add_argument('--tasks', type=str,
-                        help="Yaml file specifying the training/testing tasks", default='chemprot_singlesent')
+                        help="Yaml file specifying the training/testing tasks", default='chemprot_singlesent,iula')
+    parser.add_argument('--test_tasks', type=str,
+                        help="Yaml file specifying the additional testing tasks for zero-shot experiments. By default, the output layer of the first training task is used for prediction.", default='nubes')
     parser.add_argument('--outdir', type=str,
                         help="output path", default='checkpoints')
     parser.add_argument('--logfile', type=str,

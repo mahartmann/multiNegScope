@@ -62,7 +62,7 @@ class RelClassificationDataset(Dataset):
 
 
             labels.append(self.label_map[example.label])
-            print(tokenizer.vocab_size)
+
             tokenized_seq = tokenizer.encode_plus(text=example.seq,  padding='longest', max_length=self.max_seq_len)
             for elm in tokenized_seq['input_ids']:
                 if elm > 28996:

@@ -1,9 +1,10 @@
-task_type: seqclassification
+task_type:
+dataset_type: relclassification
+dataset: gad
 dropout_prob: 0.1
 splits:
 - train
 - dev
 - test
-dataset: gad
 split_seqs: False
 max_seq_len: 128

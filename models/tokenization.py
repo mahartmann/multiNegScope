@@ -26,4 +26,5 @@ def setup_customized_tokenizer(model, tokenizer_class, do_lower_case, config):
         tokenizer = tokenizer_class.from_pretrained(pretrained_model_name_or_path='bert-base-multilingual-cased', vocab_file=config.get('Files', 'mbertvocab'),
                                                     do_lower_case=do_lower_case,
                                                     additional_special_tokens=additional_tokens)
+
     return tokenizer

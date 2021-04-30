@@ -1,16 +1,12 @@
 """
 this code is adapted from the mt-dnn implementation
 """
-import logging
-# coding=utf-8
-# Copyright (c) Microsoft. All rights reserved.
 
 import random
 import logging
 import numpy as np
 
 from torch.utils.data import Dataset,  BatchSampler
-from models.optimization import get_scheduler, get_optimizer
 from collections import Counter
 from mydatasets.RelClassificationDataset import read_relation_classification_examples, RelClassificationDataset
 
@@ -282,20 +278,3 @@ if __name__ == "__main__":
 
 
 
-    """
-    # get optimizer
-    optimizer = get_optimizer(model, lr=2e-5, eps=1e-6, decay=0.01)
-
-    epochs = 1
-    warmup_frac = 0
-
-    # get lr schedule
-    total_steps = len(mtl_dataset) * epochs
-    warmup_steps = warmup_frac * total_steps
-    logger.info('Scheduler: {} with {} warmup steps'.format('warmuplinear', warmup_steps))
-    scheduler = get_scheduler(optimizer, scheduler='warmuplinear', warmup_steps=warmup_steps, t_total=total_steps)
-
-    model.fit(tasks, optimizer, scheduler, train_dataloader=mtl_train_dataloader,
-              dev_dataloaders=dev_dataloaders, test_dataloaders=test_dataloaders, epochs=epochs,
-              evaluation_step=20, save_best=False, outdir='.', predict=True)
-    """
