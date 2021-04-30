@@ -1,6 +1,6 @@
 task_type: seqlabeling
 dataset_type: negscope
-dataset: bioconv
+dataset: sfuenconv
 dropout_prob: 0.1
 splits:
 - train
