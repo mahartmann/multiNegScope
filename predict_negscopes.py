@@ -29,15 +29,10 @@ def main(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    # check if output dir exists. if so, assign a new one
-    if os.path.isdir(args.outdir):
-        # create new output dir
-        outdir = os.path.join(args.outdir, str(uuid.uuid4()))
-    else:
-        outdir = args.outdir
-
-    # make the output dir
-    os.makedirs(outdir)
+    outdir = args.outdir
+    if not os.path.isdir(args.outdir):
+        # make the output dir
+        os.makedirs(outdir)
 
     # create a logger
     logger = create_logger(__name__, to_disk=True, log_file='{}/{}'.format(outdir, args.logfile))
