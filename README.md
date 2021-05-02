@@ -8,10 +8,12 @@ The results that these models achieve are comparabel to the results reported in 
 ### Identifying negation cues using a pre-defined cue list
 ### Predicting negation scopes given marked negation cues
 ## Training models
+Coming soon
 
 Information about how to pre-process the data will be added here in the future. In the meantime, please contact the authors is you have any questions about dataset preprocessing.
 
 ## Evaluating models
+Coming soon 
 ### Contact the Authors
 If you have questions, please contact the corresponding author at  ```mrkhartmann4@gmail.com``` .
 
