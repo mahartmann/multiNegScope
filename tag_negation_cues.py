@@ -7,12 +7,11 @@ import spacy
 from spacy.matcher import Matcher
 from spacy.tokenizer import Tokenizer
 
-import configparser
-import os
 import json
 import argparse
 
 from heatmap import html_heatmap
+from util import create_logger
 
 
 def read_file(fname):
@@ -95,7 +94,7 @@ def process_doc(nlp, matcher, text, split_sents=False):
 
 
 def main(args):
-
+    logger = create_logger('logger')
     # it doesn't matter which models we load here because we only do white space or rule-based tokenization anyway
     nlp = spacy.load("en_core_web_sm")
     nlp.tokenizer = Tokenizer(nlp.vocab)
@@ -116,12 +115,14 @@ def main(args):
             if ' '.join(elm) not in observed_sequences:
                 tagged_sentences.append({'uid': len(tagged_sentences), 'seq': elm, 'sid': '{}_{}'.format(seqid, sid)})
                 observed_sequences.add(' '.join(elm))
+    logger.info('Writing tagged sequences to {}'.format('.'.join(args.input_file.split('.')[:-1]) + '#cues.jsonl'))
     with open('.'.join(args.input_file.split('.')[:-1]) + '#cues.jsonl', 'w') as fout:
         for elm in tagged_sentences:
             fout.write(json.dumps(elm) + '\n')
     fout.close()
 
     # produce html with colored negation cues
+    logger.info('Writing html for visualization to {}'.format('.'.join(args.input_file.split('.')[:-1]) + '#cues.html'))
     html = []
     for seq in tagged_sentences:
         seq = seq['seq']
