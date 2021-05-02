@@ -8,7 +8,7 @@ The code in this repository is a re-implementation of the original code that was
 ## Training models
 ## Evaluating models
 ### Contact the Authors
-If you have questions, please contact the corresponding author at  mrkhartmann4@gmail.com . \
+If you have questions, please contact the corresponding author at  ```mrkhartmann4@gmail.com``` . \
 
 Our work can be cited using \
 @inproceedings{hartmann-sogaard-2021-multilingual, \
