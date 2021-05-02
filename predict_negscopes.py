@@ -6,7 +6,7 @@ import numpy as np
 
 from mydatasets.NegScopeDataset import NegScopeDataset, read_examples
 from mydatasets.load_data import get_data
-import configparser
+
 from transformers import BertTokenizer
 import os
 from util import create_logger
@@ -24,8 +24,6 @@ def load_data(fname, task, tokenizer):
 
 
 def main(args):
-    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
-    config.read(args.config)
 
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -51,12 +49,13 @@ def main(args):
 
     test_dataloaders = []
     tasks = []
+
     for ds in args.test_datasets.split(','):
 
         task = load_test_task(args.task_spec)
         task.task_id = 0
         task.num_labels = 5
-
+        task.dataset = ds
         test_data = load_data(os.path.join(args.datapath, ds), task=task, tokenizer=tokenizer)
         tasks.append(task)
 
@@ -74,9 +73,10 @@ def main(args):
 
     for task, dl in zip(tasks, test_dataloaders):
 
-        logger.info('Predicting negation scopes for {}, writing results to {}'.format(task.dataset, outdir))
+        outfile =  os.path.join(args.outdir, '{}#scopes.html'.format('.'.join(task.dataset.split('.')[:-1])))
+        logger.info('Predicting negation scopes for {}, writing results to {}'.format(task.dataset, outfile))
         scopes, seqs = predict_negation_scopes(dl, model, task)
-        with open(os.path.join(outdir, '{}_scopes.html'.format(task.dataset)), 'w') as fout:
+        with open(outfile, 'w') as fout:
             for scope, seq in zip(scopes, seqs):
                 final_labels, final_seq = rejoin_subwords(model.tokenizer.convert_ids_to_tokens(seq), scope)
                 #get the label_map associated with the output layer used for classification
@@ -181,8 +181,6 @@ if __name__=="__main__":
     parser.add_argument('--model_checkpoint', type=str,
                         default='/home/mareike/PycharmProjects/multiNegScope/models/checkpoints/7196c9d2-ee59-4572-b39c-298e7c6c4b1b/best_model/model_0.pt',
                         help="The trained model used to predict the test data")
-    parser.add_argument('--config',
-                        default='./preprocessing/config.cfg')
     parser.add_argument('--datapath', type=str,
                         help="Folder containing datasets to be predicted",
                         default='/home/mareike/PycharmProjects/multiNegScope/data/preprocessed')
