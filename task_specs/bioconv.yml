@@ -7,4 +7,4 @@ splits:
 - dev
 - test
 split_seqs: False
-max_seq_len: 128
+max_seq_len: 512
