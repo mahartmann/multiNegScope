@@ -4,7 +4,7 @@ This repository contains code for identifying negation scopes in multilingual cl
 The code in this repository is a re-implementation of the original code that was used for the experiments described in the paper. The original code is based on the [mt-dnn](https://github.com/namisan/mt-dnn) framework, and it was re-implemented in order to make it less complex. If you want to obtain the code that was used for the experiments in the paper, please contact the authors at ```mrkhartmann4@gmail.com``` 
 ## Using trained models to predict negation scopes
 
-The results that these models achieve are comparabel to the results reported in the paper, and can be found [here](docs/results.md)
+The results that these models achieve are comparable to the results reported in the paper, and can be found [here](docs/results.md)
 ### Identifying negation cues using a pre-defined cue list
 ### Predicting negation scopes given marked negation cues
 ## Training models
