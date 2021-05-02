@@ -10,7 +10,7 @@ from spacy.tokenizer import Tokenizer
 import json
 import argparse
 
-from heatmap import html_heatmap
+from visualization.heatmap import html_heatmap
 from util import create_logger
 
 

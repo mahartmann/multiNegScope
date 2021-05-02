@@ -1,7 +1,7 @@
 import torch
 
 import random
-from models.evaluation import batch_to_device
+from eval.evaluation import batch_to_device
 import numpy as np
 
 from mydatasets.NegScopeDataset import NegScopeDataset, read_examples
@@ -15,7 +15,7 @@ import argparse
 
 from models.tasks import load_test_task
 from models.MTLModel import  MTLModel
-from heatmap import html_heatmap
+from visualization.heatmap import html_heatmap
 
 def load_data(fname, task, tokenizer):
     data = NegScopeDataset(read_examples(fname, with_labels=False), tokenizer=tokenizer, split_seqs=task.split_seqs, max_seq_len=task.max_seq_len, with_labels=False)
@@ -181,7 +181,7 @@ if __name__=="__main__":
     parser.add_argument('--test_datasets', type=str,
                         help="Dataset to be predicted", default='iulaconv_test#cues.jsonl')
     parser.add_argument('--task_spec',
-                        default='./task_specs/iulaconv_test#cues.yml', help='Yml file with task specification')
+                        default='./task_specs/negscopes_test_task.yml', help='Yml file with task specification')
     parser.add_argument('--outdir', type=str,
                         help="output path", default='checkpoints/results')
     parser.add_argument('--logfile', type=str,

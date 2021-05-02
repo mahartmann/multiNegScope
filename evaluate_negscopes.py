@@ -64,7 +64,7 @@ def main(args):
 
     padding_label = test_data.padding_label
 
-    model = MTLModel(bert_encoder='small_bert', device='cpu', tasks=tasks, padding_label_idx=padding_label, load_checkpoint=True,
+    model = MTLModel(bert_encoder=None, device='cpu', tasks=tasks, padding_label_idx=padding_label, load_checkpoint=True,
                      checkpoint=args.model_checkpoint, tokenizer=tokenizer)
 
 
@@ -88,7 +88,7 @@ if __name__=="__main__":
                         help="Random seed")
 
     parser.add_argument('--model_checkpoint', type=str,
-                        default='./models/checkpoints/7196c9d2-ee59-4572-b39c-298e7c6c4b1b/best_model/model_0.pt',
+                        default='./checkpoints/best/model_47.pt',
                         help="The trained model used to predict the test data")
     parser.add_argument('--config',
                         default='./preprocessing/config.cfg')

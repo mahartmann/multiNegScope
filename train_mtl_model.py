@@ -83,6 +83,13 @@ def main(args):
         if 'test' in task.splits:
             test_data = get_data(task=task, split='test', config=config, tokenizer=tokenizer)
             test_data.set_task_id(task_id)
+            if task.dataset == 'iulaconv':
+                import json
+                #with open('iulaconv_test.json.analsyis', 'w') as f:
+                #    for elm in test_data:
+                #        f.write(json.dumps(elm) + '\n')
+                #f.close()
+
             test_dataloader = DataLoader(test_data, shuffle=False, batch_size=8, collate_fn=test_data.collate_fn)
             test_dataloaders[task_id] = test_dataloader
 
@@ -139,11 +146,11 @@ if __name__=="__main__":
     parser.add_argument('--load_checkpoint', type=bool_flag, default=False,
                         help="Load a trained model checkpoint")
     parser.add_argument('--config',
-                        default='../preprocessing/config.cfg')
+                        default='./preprocessing/config.cfg')
     parser.add_argument('--task_spec',
-                        default='../task_specs', help='Directory with task specifications')
+                        default='./task_specs', help='Directory with task specifications')
     parser.add_argument('--tasks', type=str,
-                        help="Yaml file specifying the training/testing tasks", default='bioconv')
+                        help="Yaml file specifying the training/testing tasks", default='iulaconv')
     parser.add_argument('--test_tasks', type=str,
                         help="Yaml file specifying the additional testing tasks for zero-shot experiments. By default, the output layer of the first training task is used for prediction.", default='nubes')
     parser.add_argument('--outdir', type=str,

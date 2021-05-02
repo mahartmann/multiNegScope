@@ -104,6 +104,7 @@ class NegScopeDataset(Dataset):
                     logging.info('Ex {}'.format(ex_index))
                     logging.info('Input seq: {}'.format(subtoks))
                     logging.info('--> {}'.format(tokenizer.convert_tokens_to_ids(subtoks)))
+                    logging.info('Convert back to tokens for sanity check --> {}'.format(tokenizer.convert_ids_to_tokens(tokenizer.convert_tokens_to_ids(subtoks))))
                     logging.info('Labels: {}'.format(sublabels))
                     logging.info('--> {}'.format([self.label_map[l] for l in sublabels]))
 
