@@ -19,14 +19,15 @@ def read_file(fname):
         lines = f.readlines()
     return [line.strip() for line in lines]
 
-def load_data(fname):
+def load_data(fname, labeled=False):
     data = []
     with open(fname) as f:
         for line in f:
             elm = json.loads(line)
-            elm['labels'] = [elm['labels'][i] for i,t in enumerate(elm['seq']) if t != '[CUE]' ]
             elm['seq'] = [t for i,t in enumerate(elm['seq']) if t != '[CUE]' ]
-            assert len(elm['seq']) == len(elm['labels'])
+            if labeled:
+                elm['labels'] = [elm['labels'][i] for i, t in enumerate(elm['seq']) if t != '[CUE]']
+                assert len(elm['seq']) == len(elm['labels'])
             data.append(elm)
     return data
 
@@ -126,13 +127,13 @@ def main(args):
     html = []
     for seq in tagged_sentences:
         seq = seq['seq']
-        scores = [0]*len(seq)
+        labels = ['O']*len(seq)
         for i, tok in enumerate(seq):
             if tok == '[CUE]':
-                scores[i] = 1
-                if i < len(scores)-1:
-                    scores[i+1] = 1
-        html.append(html_heatmap(words = [elm for elm in seq if elm != '[CUE]'] + ['<br>'], scores = [elm for i,elm in enumerate(scores) if seq[i] != '[CUE]'] + [0]))
+                labels[i] = 'CUE'
+                if i < len(labels)-1:
+                    labels[i+1] = 'CUE'
+        html.append(html_heatmap(words = [elm for elm in seq if elm != '[CUE]'] + ['<br>'], labels = [elm for i,elm in enumerate(labels) if seq[i] != '[CUE]'] + ['O']))
     with open('.'.join(args.input_file.split('.')[:-1]) + '#cues.html', 'w') as fout:
         for elm in html:
             fout.write(elm + '\n')
@@ -144,9 +145,9 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(
         description='Train MTL model')
     parser.add_argument('--cue_list',
-                        default='/home/mareike/PycharmProjects/negscope/data/cues/cues_es_translated.txt')
+                        default='./data/cues/cues_danish.txt')
     parser.add_argument('--input_file',
-                        default='/home/mareike/PycharmProjects/multiNegScope/data/preprocessed/iulaconv_test.json')
+                        default='./examples/Pt.jsonl')
 
     args = parser.parse_args()
 

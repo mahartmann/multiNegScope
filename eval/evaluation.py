@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from sklearn.metrics import classification_report
 
-import metrics
+from eval import metrics
 
 
 def batch_to_device(batch, device):

@@ -3,7 +3,7 @@ import os
 
 from transformers import  BertConfig, BertModel, BertTokenizer, PreTrainedTokenizer
 from models.tasks import load_task
-from models.evaluation import evaluate_seq_labeling, evaluate_seq_classification
+from eval.evaluation import evaluate_seq_labeling, evaluate_seq_classification
 from models.task_specific_layers import OutputLayerSeqLabeling, OutputLayerSeqClassification
 from models.optimization import get_optimizer
 from torch import nn
@@ -44,7 +44,10 @@ class MTLModel(nn.Module):
         # load encoder
         if load_checkpoint is True:
             logger.info('Loading config of trained model from {}'.format(checkpoint))
-            ckpt = torch.load(checkpoint)
+            if torch.cuda.is_available():
+                ckpt = torch.load(checkpoint)
+            else:
+                ckpt = torch.load(checkpoint,map_location=torch.device('cpu') )
             config = ckpt['config']
             state_dict = ckpt['model_state_dict']
             self.label_map = ckpt['label_map']

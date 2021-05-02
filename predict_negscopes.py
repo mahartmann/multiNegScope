@@ -35,7 +35,7 @@ def main(args):
 
     # create a logger
     logger = create_logger(__name__, to_disk=True, log_file='{}/{}'.format(outdir, args.logfile))
-
+    logger.info(torch.__version__)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     device = torch.device(device)
 
@@ -61,7 +61,7 @@ def main(args):
 
 
     padding_label = test_data.padding_label
-    model = MTLModel(bert_encoder='small_bert', device='cpu', tasks=tasks, padding_label_idx=padding_label, load_checkpoint=True,
+    model = MTLModel(bert_encoder=None, device='cpu', tasks=tasks, padding_label_idx=padding_label, load_checkpoint=True,
                      checkpoint=args.model_checkpoint, tokenizer=tokenizer)
 
 
@@ -77,17 +77,11 @@ def main(args):
                 label_map = {val: key for key, val in model.label_map[task.task_id].items()}
                 final_labels = [label_map[elm]  if elm in label_map else elm for elm in final_labels]
                 scores = []
-                for l in final_labels:
-                    if l == 'O':
-                        scores.append(0)
-                    elif l == 'CUE':
-                        scores.append(1)
-                    else:
-                        scores.append(-1)
-                print(final_seq)
-                print(final_labels)
-                print('\n')
-                html_str = html_heatmap(words=final_seq + ['<br>'], scores = scores + [0])
+
+                logger.info(final_seq)
+                logger.info(final_labels)
+
+                html_str = html_heatmap(words=final_seq + ['<br>'], labels = final_labels + ['O'])
                 fout.write(html_str + '\n')
         fout.close()
 
@@ -168,24 +162,24 @@ def predict_negation_scopes(data_loader, model, task):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(
-        description='Train MTL model')
+        description='Predict negation scopes')
     parser.add_argument('--seed', type=int, default=42,
                         help="Random seed")
 
     parser.add_argument('--model_checkpoint', type=str,
-                        default='/home/mareike/PycharmProjects/multiNegScope/models/checkpoints/7196c9d2-ee59-4572-b39c-298e7c6c4b1b/best_model/model_0.pt',
+                        default='./checkpoints/best/model_47.pt',
                         help="The trained model used to predict the test data")
     parser.add_argument('--datapath', type=str,
                         help="Folder containing datasets to be predicted",
-                        default='/home/mareike/PycharmProjects/multiNegScope/data/preprocessed')
+                        default='./examples')
     parser.add_argument('--test_datasets', type=str,
-                        help="Dataset to be predicted", default='iulaconv_test#cues.jsonl')
+                        help="Dataset to be predicted", default='Pt#cues.jsonl')
     parser.add_argument('--task_spec',
-                        default='./task_specs/negscopes_test_task.yml', help='Yml file with task specification')
+                        default='./task_specs/negscope_test_task.yml', help='Yml file with task specification')
     parser.add_argument('--outdir', type=str,
-                        help="output path", default='checkpoints/results')
+                        help="output path", default='./examples')
     parser.add_argument('--logfile', type=str,
-                        help="name of log file", default='mtl_model.log')
+                        help="name of log file", default='scope_prediction.log')
     parser.add_argument('--bs', type=int, default=1,
                         help="Batch size")
     args = parser.parse_args()
