@@ -13,7 +13,7 @@ Information about how to pre-process the data will be added here in the future. 
 
 ## Evaluating models
 ### Contact the Authors
-If you have questions, please contact the corresponding author at  ```mrkhartmann4@gmail.com``` . \
+If you have questions, please contact the corresponding author at  ```mrkhartmann4@gmail.com``` .
 
 Our work can be cited using \
 @inproceedings{hartmann-sogaard-2021-multilingual, \
