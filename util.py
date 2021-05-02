@@ -68,6 +68,6 @@ def create_logger(name, silent=False, to_disk=False, log_file=None):
 
 def dump_json(fname, data):
     with open(fname, 'w') as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=2)
     outfile.close()
 
