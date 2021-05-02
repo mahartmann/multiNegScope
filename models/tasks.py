@@ -26,3 +26,10 @@ def load_task(fname):
     task = Task(type=task_def['task_type'], dropout_prob=task_def['dropout_prob'], splits=task_def['splits'], dataset_type=task_def['dataset_type'], dataset=task_def['dataset'],
          split_seqs=task_def['split_seqs'], max_seq_len=task_def['max_seq_len'])
     return task
+
+def load_test_task(fname):
+    task_def = yaml.safe_load(open(fname))
+    task = Task(type=task_def['task_type'], dropout_prob=0, splits=None,
+                dataset_type=task_def['dataset_type'], dataset=None,
+                split_seqs=task_def['split_seqs'], max_seq_len=task_def['max_seq_len'])
+    return task

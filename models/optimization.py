@@ -1,6 +1,6 @@
 import transformers
 from transformers import AdamW
-from .bert_optim import Adamax
+
 
 def get_scheduler(optimizer, scheduler: str, warmup_steps: int, t_total: int):
     """
@@ -37,7 +37,5 @@ def get_optimizer(optimizer_name, model, lr, eps, decay):
                           lr=lr,  # args.learning_rate - default is 5e-5, our notebook had 2e-5
                           eps=eps  # args.adam_epsilon  - default is 1e-8.
                           )
-    elif optimizer_name == 'adamx':
-        A
 
     return optimizer

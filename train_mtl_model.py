@@ -45,16 +45,19 @@ def main(args):
 
     # create a logger
     logger = create_logger(__name__, to_disk=True, log_file='{}/{}'.format(outdir, args.logfile))
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    device = torch.device(device)
-
-    tokenizer = setup_customized_tokenizer(model=args.tokenizer, do_lower_case=False, config=config,
-                                           tokenizer_class=BertTokenizer)
     tasks = []
     for task_name in args.tasks.split(','):
         task = load_task(os.path.join(args.task_spec, '{}.yml'.format(task_name)))
         tasks.append(task)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = torch.device(device)
+
+    if not args.load_checkpoint:
+        tokenizer = setup_customized_tokenizer(model=args.tokenizer, do_lower_case=False, config=config,
+                                               tokenizer_class=BertTokenizer)
+    else:
+        tokenizer = BertTokenizer.from_pretrained(args.checkpoint)
+
 
 
 
@@ -95,9 +98,10 @@ def main(args):
 
 
 
-    model = MTLModel(checkpoint=args.bert_model, device=device, tasks=tasks, padding_label_idx=padding_label)
+    model = MTLModel(bert_encoder=args.bert_model, device=device, tasks=tasks, padding_label_idx=padding_label, load_checkpoint=args.load_checkpoint, checkpoint=os.path.join(args.checkpoint, 'model.pt'), tokenizer=tokenizer)
 
     # get optimizer
+    # TODO: in case of loading from checkpoint, initialize optimizer using saved optimizer state dict
     optimizer = get_optimizer(optimizer_name='adamw', model=model, lr=args.lr, eps=args.eps, decay=args.decay)
 
 
@@ -116,6 +120,7 @@ def main(args):
               evaluation_step=args.evaluation_steps, save_best=args.save_best, outdir=outdir, predict=args.predict)
 
 
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser(
         description='Train MTL model')
@@ -128,7 +133,11 @@ if __name__=="__main__":
                         help="The pre-trained encoder used to encode the entities of the analogy")
     parser.add_argument('--tokenizer', type=str,
                         default='bert-base-cased',
-                        help="The tokenizer")
+                        help="The tokenizer. Should be the same as bert_model. When loading from a trained checkpoint, the tokenizer is loaded from the checkpoint as well.")
+    parser.add_argument('--checkpoint', type=str, default='./checkpoints/test',
+                        help="A trained model checkpoint")
+    parser.add_argument('--load_checkpoint', type=bool_flag, default=False,
+                        help="Load a trained model checkpoint")
     parser.add_argument('--config',
                         default='../preprocessing/config.cfg')
     parser.add_argument('--task_spec',

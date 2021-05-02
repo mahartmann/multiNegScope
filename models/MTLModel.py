@@ -1,13 +1,13 @@
 import torch
 import os
 
-from transformers import  BertConfig, BertModel
-
+from transformers import  BertConfig, BertModel, BertTokenizer, PreTrainedTokenizer
+from models.tasks import load_task
 from models.evaluation import evaluate_seq_labeling, evaluate_seq_classification
 from models.task_specific_layers import OutputLayerSeqLabeling, OutputLayerSeqClassification
-
-
+from models.optimization import get_optimizer
 from torch import nn
+from models.tokenization import setup_customized_tokenizer
 import logging
 import json
 import test_config
@@ -38,21 +38,36 @@ def print_steps(ts):
 
 class MTLModel(nn.Module):
 
-    def __init__(self, checkpoint, device,  tasks, padding_label_idx):
+    def __init__(self, bert_encoder, device, tasks, padding_label_idx, tokenizer, load_checkpoint=False, checkpoint=None):
         super(MTLModel, self).__init__()
 
         # load encoder
+        if load_checkpoint is True:
+            logger.info('Loading config of trained model from {}'.format(checkpoint))
+            ckpt = torch.load(checkpoint)
+            config = ckpt['config']
+            state_dict = ckpt['model_state_dict']
+            self.label_map = ckpt['label_map']
+            if bert_encoder == 'small_bert':
+                bert_config = BertConfig.from_dict(test_config.test_config)
+                self.encoder = BertModel(bert_config)
+            else:
+                self.encoder = BertModel.from_pretrained(config['encoder'])
         # small bert is a toy model for debugging
-        if checkpoint == 'small_bert':
+        elif bert_encoder == 'small_bert':
             bert_config = BertConfig.from_dict(test_config.test_config)
             self.encoder = BertModel(bert_config)
         else:
-            self.encoder = BertModel.from_pretrained(pretrained_model_name_or_path=checkpoint)
+            self.encoder = BertModel.from_pretrained(pretrained_model_name_or_path=bert_encoder)
 
         self.hidden_size = self.encoder.config.hidden_size
         self.device = device
         self.padding_label_idx = padding_label_idx
 
+        self.tasks = tasks
+
+        # we only keep track of the tokenizer to save it along with the model
+        self.tokenizer = tokenizer
 
         self.output_layers = nn.ModuleList()
 
@@ -67,6 +82,24 @@ class MTLModel(nn.Module):
                 self.output_layers.insert(task.task_id, output_layer)
                 logging.info('Adding task {} output layer for {}'.format(task.task_id, task.task_type))
 
+        # initialize weights
+        if load_checkpoint is True:
+            model_params = set()
+            for key, val in self.named_parameters():
+                model_params.add(key)
+            logger.info('Initializing weights from trained model checkpoint {}'.format(checkpoint))
+            print('Initializing weights from trained model checkpoint {}'.format(checkpoint))
+            for key in state_dict.keys():
+                if key not in model_params:
+                    logger.info('Additional parameter keys: {}'.format(key))
+                    print('Additional parameter keys: {}'.format(key))
+            for key, val in self.named_parameters():
+                if key not in state_dict:
+                    print('Missing parameter keys: {}'.format(key))
+                    logger.info('Missing parameter keys: {}'.format(key))
+
+            self.load_state_dict(state_dict, strict=False)
+
 
         headline = '############# Model Arch of MTL Model #############'
         logger.info('\n{}\n{}\n'.format(headline, self))
@@ -80,7 +113,7 @@ class MTLModel(nn.Module):
         # access the last hidden states
 
         last_hidden_states = encoded_output['last_hidden_state']
-        # feed the last hidden state throuhh the task specific output layers. Pooling, etc and loss computation is handled by those
+        # feed the last hidden state through the task specific output layers. Pooling, etc and loss computation is handled by those
         loss, logits = self.output_layers[task.task_id](last_hidden_states, labels)
         return loss, logits
 
@@ -223,9 +256,44 @@ class MTLModel(nn.Module):
         return results
 
     def save(self, outpath, optimizer):
-        outpath = '/'.join(outpath.split('/')[:-1] + ['model.pkl'])
+        config = {'encoder': self.encoder.config._name_or_path}
+        # add the label maps for the different output layers
+        label_map = {}
+        for task in self.tasks:
+            label_map[task.task_id] = task.label_map
+
         torch.save({
+            'label_map': label_map,
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
+            'config': config
         }, outpath)
+
+        self.tokenizer.save_pretrained('/'.join(outpath.split('/')[:-1]))
+
+
+if __name__=="__main__":
+    tasks = []
+
+    #task = load_task(os.path.join('../task_specs', '{}.yml'.format('bioconv')))
+    #task.num_labels = 5
+    #task.task_id = 0
+    #tasks.append(task)
+    task = load_task(os.path.join('../task_specs', '{}.yml'.format('iula')))
+    task.num_labels = 5
+    task.task_id = 0
+    tasks.append(task)
+    import configparser
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
+    config.read('../preprocessing/config.cfg')
+    tokenizer = setup_customized_tokenizer(model='bert-base-cased', do_lower_case=False, config=config,
+                                           tokenizer_class=BertTokenizer)
+    model = MTLModel(bert_encoder='bert-base-cased', device='cpu', tasks=tasks, padding_label_idx=-1, load_checkpoint=False, tokenizer=tokenizer)
+    optimizer = get_optimizer(optimizer_name='adamw', model=model, lr=5e-5, eps=1e-6, decay=0)
+    tokenizer.save_pretrained('checkpoints/test')
+    model.save('checkpoints/test/model.pt', optimizer)
+    #model = MTLModel(bert_encoder=None, device='cpu', tasks=tasks, padding_label_idx=-1, load_checkpoint=True, checkpoint='checkpoints/test/model.pt' )
+    #tokenizer = BertTokenizer.from_pretrained('checkpoints/test')
+    #print(tokenizer.tokenize('[CUE]'))
+
 

@@ -25,19 +25,21 @@ class OutputLayerSeqLabeling(nn.Module):
         self.classifier = nn.Linear(hidden_size, task.num_labels)
         self.criterion = CrossEntropyLoss(ignore_index=padding_idx)
 
-    def forward(self, last_hidden_states, labels):
+    def forward(self, last_hidden_states, labels=None):
         # get a classifcation for each token in the sequence
         last_hidden_states = self.dropout(last_hidden_states)
         logits = self.classifier(last_hidden_states)
 
         # logits: bs x seq_len x num_labels -> (bs x seq_len) x num_labels
         flattened_logits = logits.view(logits.shape[0] * logits.shape[1], logits.shape[2])
+        if labels:
+            # labels: bs x seq_len -> (bs x seq_len)
+            flattened_labels = labels.view(-1)
 
-        # labels: bs x seq_len -> (bs x seq_len)
-        flattened_labels = labels.view(-1)
-
-        loss = self.criterion(flattened_logits, flattened_labels)
-        return loss, logits
+            loss = self.criterion(flattened_logits, flattened_labels)
+            return loss, logits
+        else:
+            return None, logits
 
 
 class OutputLayerSeqClassification(nn.Module):
@@ -51,9 +53,12 @@ class OutputLayerSeqClassification(nn.Module):
         self.criterion = CrossEntropyLoss(ignore_index=padding_idx)
 
 
-    def forward(self, input, labels):
+    def forward(self, input, labels=None):
         pooled_input = self.pooler(input)
         pooled_input = self.dropout(pooled_input)
         logits = self.classifier(pooled_input)
-        loss = self.criterion(logits, labels)
-        return loss, logits
+        if labels:
+            loss = self.criterion(logits, labels)
+            return loss, logits
+        else:
+            return None, logits

@@ -1,0 +1,4 @@
+task_type: seqlabeling
+dataset_type: negscope
+split_seqs: False
+max_seq_len: 128

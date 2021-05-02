@@ -13,7 +13,7 @@ import json
 class NegScopeDataset(Dataset):
 
     def __init__(self, examples: List[SeqLabelingInputExample], tokenizer: PreTrainedTokenizer, max_seq_len: int, label_map=None, show_progress_bar: bool = None,
-                 split_seqs: bool=None):
+                 split_seqs: bool=None, with_labels:bool=True):
         """
         Create a new SentencesDataset with the tokenized texts and the labels as Tensor
         """
@@ -27,6 +27,7 @@ class NegScopeDataset(Dataset):
         self.convert_input_examples(examples, tokenizer, max_seq_len)
         self.padding_label = -1
         self.task_id = None
+        self.with_labels = with_labels
 
     def set_task_id(self, task_id):
         self.task_id = task_id
@@ -82,8 +83,6 @@ class NegScopeDataset(Dataset):
             # split the sequence if it is longer than max length. make sure to not split within a scope or within a word
 
             if len(subtoks) > max_seq_len-2:
-                logging.info(example.seq)
-                logging.info('{}: {}'.format(len(subtoks), subtoks))
                 c += 1
                 if self.split_seqs:
                     smaller_subtoks, smaller_sublabels = self.split_seq(subtoks, sublabels)
@@ -195,28 +194,27 @@ class NegScopeDataset(Dataset):
             assert len([1 for elm in attention_mask if elm == 0]) == len([1 for elm in padded_label if elm == -1])
 
 
-        """
-        d = []
-        for in_ids, att_mask, labs in zip(padded_seqs, padded_attention_masks, padded_labels):
-            d.append({'input_ids': torch.LongTensor(in_ids),
-                      'attention_mask': torch.LongTensor(att_mask),
-                      'labels': torch.LongTensor(labs),
-                     'task_id': self.task_id})
-        return d
-        """
-        return {'input_ids': torch.LongTensor(padded_seqs),
-                'attention_mask': torch.LongTensor(padded_attention_masks),
-                'labels': torch.LongTensor(padded_labels),
-                'task_id': torch.LongTensor([self.task_id]*len(padded_seqs))}
+        if self.with_labels:
+            return {'input_ids': torch.LongTensor(padded_seqs),
+                    'attention_mask': torch.LongTensor(padded_attention_masks),
+                    'labels': torch.LongTensor(padded_labels),
+                    'task_id': torch.LongTensor([self.task_id]*len(padded_seqs))}
+        else:
+            return {'input_ids': torch.LongTensor(padded_seqs),
+                    'attention_mask': torch.LongTensor(padded_attention_masks),
+                    'task_id': torch.LongTensor([self.task_id] * len(padded_seqs))}
 
 
 
-def read_examples(fname):
+def read_examples(fname, with_labels = True):
     data = []
     with open(fname) as f:
         for line in f:
             j = json.loads(line.strip())
-            data.append(SeqLabelingInputExample(guid=j['uid'], text=j['seq'], label=j['labels']))
+            if with_labels:
+                data.append(SeqLabelingInputExample(guid=j['uid'], text=j['seq'], label=j['labels']))
+            else:
+                data.append(SeqLabelingInputExample(guid=j['uid'], text=j['seq'], label=['0']*len(j['seq'])))
     return data
 
 
