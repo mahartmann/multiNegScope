@@ -21,5 +21,4 @@ Our work can be cited using \
     address = "online", \
     publisher = "Association for Computational Linguistics", \
     url = "https://www.aclweb.org/anthology/2021.louhi-1.2", \
-    pages = "7--18", \
-}
+    pages = "7--18"}
