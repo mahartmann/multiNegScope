@@ -5,7 +5,6 @@ from models.evaluation import batch_to_device
 import numpy as np
 
 from mydatasets.NegScopeDataset import NegScopeDataset, read_examples
-from mydatasets.load_data import get_data
 
 from transformers import BertTokenizer
 import os
@@ -13,7 +12,7 @@ from util import create_logger
 
 from torch.utils.data import DataLoader
 import argparse
-import uuid
+
 from models.tasks import load_test_task
 from models.MTLModel import  MTLModel
 from heatmap import html_heatmap

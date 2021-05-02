@@ -24,15 +24,11 @@ def main(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    # check if output dir exists. if so, assign a new one
-    if os.path.isdir(args.outdir):
-        # create new output dir
-        outdir = os.path.join(args.outdir, str(uuid.uuid4()))
-    else:
-        outdir = args.outdir
 
-    # make the output dir
-    os.makedirs(outdir)
+    outdir = args.outdir
+    if not os.path.isdir(outdir):
+        # make the output dir
+        os.makedirs(outdir)
 
     # create a logger
     logger = create_logger(__name__, to_disk=True, log_file='{}/{}'.format(outdir, args.logfile))
@@ -71,11 +67,13 @@ def main(args):
 
 
     for task, dl in zip(tasks, test_dataloaders):
-        results = model.evaluate_on_dev(dl, model, task)
+        logger.info('Evaluating {} with output layer {}'.format(task.dataset, task.task_id))
+        results = model.evaluate_on_dev(dl, task)
         test_score, test_report, test_predictions = results['score'], results['results'], results[
             'predictions']
         # dump to file
-        dump_json(fname=os.path.join(outdir, 'results_{}.json'.format(task.dataset)),
+        logger.info('Dumping results to {}'.format(os.path.join(outdir, '{}#results_{}.json'.format(args.model_checkpoint.replace('/', '_'), task.dataset))))
+        dump_json(fname=os.path.join(outdir, '{}#results_{}.json'.format(args.model_checkpoint.replace('/', '_'), task.dataset)),
                   data={'f1': test_score, 'report': test_report, 'predictions': test_predictions})
 
 
@@ -88,7 +86,7 @@ if __name__=="__main__":
                         help="Random seed")
 
     parser.add_argument('--model_checkpoint', type=str,
-                        default='/home/mareike/PycharmProjects/multiNegScope/models/checkpoints/7bc0a65a-cdfe-4115-9bd2-2409dd92639b/best_model/model_0.pt',
+                        default='./models/checkpoints/7196c9d2-ee59-4572-b39c-298e7c6c4b1b/best_model/model_0.pt',
                         help="The trained model used to predict the test data")
     parser.add_argument('--config',
                         default='./preprocessing/config.cfg')
@@ -102,8 +100,6 @@ if __name__=="__main__":
                         help="name of log file", default='mtl_model.log')
     parser.add_argument('--bs', type=int, default=8,
                         help="Batch size")
-    parser.add_argument('--max_seq_len', type=int, default=512,
-                        help="Max seq length")
 
     args = parser.parse_args()
 
