@@ -40,11 +40,13 @@ def main(args):
 
     test_dataloaders = []
     tasks = []
+    ds_names = []
     for ds in args.test_datasets.split(','):
 
         task_name = ''.join(ds.split('_')[:-1])
 
         splt = ds.split('_')[-1]
+        ds_names.append(ds)
         task = load_task(os.path.join(args.task_spec, '{}.yml'.format(task_name)))
         task.task_id = 0
         task.num_labels = 5
@@ -66,14 +68,14 @@ def main(args):
                      checkpoint=args.model_checkpoint, tokenizer=tokenizer)
 
 
-    for task, dl in zip(tasks, test_dataloaders):
+    for task, dl, ds in zip(tasks, test_dataloaders, ds_names):
         logger.info('Evaluating {} with output layer {}'.format(task.dataset, task.task_id))
         results = model.evaluate_on_dev(dl, task)
         test_score, test_report, test_predictions = results['score'], results['results'], results[
             'predictions']
         # dump to file
-        logger.info('Dumping results to {}'.format(os.path.join(outdir, '{}#results_{}.json'.format(args.model_checkpoint.replace('/', '_'), task.dataset))))
-        dump_json(fname=os.path.join(outdir, '{}#results_{}.json'.format(args.model_checkpoint.replace('/', '_'), task.dataset)),
+        logger.info('Dumping results to {}'.format(os.path.join(outdir, 'results_{}.json'.format(ds))))
+        dump_json(fname=os.path.join(outdir, 'results_{}.json'.format(ds)),
                   data={'f1': test_score, 'report': test_report, 'predictions': test_predictions})
 
 
