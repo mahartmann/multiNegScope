@@ -32,7 +32,7 @@ class OutputLayerSeqLabeling(nn.Module):
 
         # logits: bs x seq_len x num_labels -> (bs x seq_len) x num_labels
         flattened_logits = logits.view(logits.shape[0] * logits.shape[1], logits.shape[2])
-        if labels:
+        if labels is not None:
             # labels: bs x seq_len -> (bs x seq_len)
             flattened_labels = labels.view(-1)
 
@@ -57,7 +57,7 @@ class OutputLayerSeqClassification(nn.Module):
         pooled_input = self.pooler(input)
         pooled_input = self.dropout(pooled_input)
         logits = self.classifier(pooled_input)
-        if labels:
+        if labels is not None:
             loss = self.criterion(logits, labels)
             return loss, logits
         else:
