@@ -6,6 +6,9 @@ The results that these models achieve are comparable to the results reported in 
 ### Installing required packages
 ```pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_sm-0.4.0.tar.gz```
 ## Using trained models to predict negation scopes
+You can use our pretrained model to predict negation scopes in your data of interest. Negation scopes are predicted in two stages: First, negation cues are identified based on a pre-defined negation cue list. Second, negation scopes are marked given the identified negation cues. In the following, we describe the steps you need to follow.
+
+
 ### 1) Identifying negation cues using a pre-defined cue list
 ```
 python tag_negation_cues.py \
@@ -16,6 +19,8 @@ python tag_negation_cues.py \
 The script creates two files ```./examples/Pt#cues.jsonl``` and ```./examples/Pt#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
 
 ### 2) Predicting negation scopes given marked negation cues
+Download the pre-trained negation scope resolution model from and put it in the ```./trained_models folder``` . 
+
 ## Training models
 Coming soon
 
