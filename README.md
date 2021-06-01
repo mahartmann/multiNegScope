@@ -8,6 +8,12 @@ The code in this repository is a re-implementation of the original code that was
 
 The results that these models achieve are comparable to the results reported in the paper, and can be found [here](docs/results.md)
 ### Identifying negation cues using a pre-defined cue list
+```
+python tag_negation_cues.py \
+--cue_list ./data/cues/cues_danish.txt \
+--input_file ./examples/Pt.jsonl
+```
+
 ### Predicting negation scopes given marked negation cues
 ## Training models
 Coming soon
