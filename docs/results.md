@@ -1,5 +1,1 @@
-| Syntax      | Description |
-| ----------- | ----------- |
-| Header      | Title       |
-| Paragraph   | Text        |
-
+Coming soon
