@@ -24,7 +24,8 @@ Download the pre-trained negation scope resolution model from and put it in the 
 ```
 python predict_negscopes.py \
 --model_checkpoint ./trained_model/mbert_bio_sfuen.pt  \
---datapath ./examples --test_datasets Pt#cues.jsonl \
+--datapath ./examples \
+--test_datasets Pt#cues.jsonl \
 --outdir ./examples
 ```
 
