@@ -4,8 +4,12 @@ This repository contains code for identifying negation scopes in multilingual cl
 The code in this repository is a re-implementation of the original code that was used for the experiments described in the paper. The original code is based on the [mt-dnn](https://github.com/namisan/mt-dnn) framework, and it was re-implemented in order to make it less complex. 
 The results that these models achieve are comparable to the results reported in the paper, and can be found [here](docs/results.md) If you would like to obtain the code that was used for the original experiments in the paper, please contact the authors at ```mrkhartmann4@gmail.com``` 
 ### Installing required packages
-Install the conda package manager followling the [instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
-```pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_sm-0.4.0.tar.gz```
+Install the conda package manager following the [instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html). Create a virtual env and install the required packages using
+```
+conda create --name multinegscope 
+conda activate multinegscope
+pip install -r requirements.txt 
+```
 ## Using trained models to predict negation scopes
 You can use our pretrained model to predict negation scopes in your data of interest. Negation scopes are predicted in two stages: First, negation cues are identified based on a pre-defined negation cue list. Second, negation scopes are marked given the identified negation cues. In the following, we describe the steps you need to follow.
 
