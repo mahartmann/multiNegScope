@@ -14,7 +14,7 @@ python tag_negation_cues.py \
 --input_file ./examples/Pt.jsonl
 ```
 
-This creates two files ```./examples/Pt#cues.jsonl``` and ```./examples/Pt#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
+The script creates two files ```./examples/Pt#cues.jsonl``` and ```./examples/Pt#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
 
 ### Predicting negation scopes given marked negation cues
 ## Training models
