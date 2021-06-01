@@ -1,13 +1,12 @@
 # Multilingual Negation Scope Resolution for Clinical Text
 This repository contains code for identifying negation scopes in multilingual clinical data using a transformer-based multilingual language model, as described in the paper [Multilingual Negation Scope Resolution for Clinical Text](https://www.aclweb.org/anthology/2021.louhi-1.2.pdf) (LOUHI 2021).
 
-The code in this repository is a re-implementation of the original code that was used for the experiments described in the paper. The original code is based on the [mt-dnn](https://github.com/namisan/mt-dnn) framework, and it was re-implemented in order to make it less complex. If you want to obtain the code that was used for the experiments in the paper, please contact the authors at ```mrkhartmann4@gmail.com``` 
+The code in this repository is a re-implementation of the original code that was used for the experiments described in the paper. The original code is based on the [mt-dnn](https://github.com/namisan/mt-dnn) framework, and it was re-implemented in order to make it less complex. 
+The results that these models achieve are comparable to the results reported in the paper, and can be found [here](docs/results.md) If you would like to obtain the code that was used for the original experiments in the paper, please contact the authors at ```mrkhartmann4@gmail.com``` 
 ### Installing required packages
 ```pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_sm-0.4.0.tar.gz```
 ## Using trained models to predict negation scopes
-
-The results that these models achieve are comparable to the results reported in the paper, and can be found [here](docs/results.md)
-### Identifying negation cues using a pre-defined cue list
+### 1) Identifying negation cues using a pre-defined cue list
 ```
 python tag_negation_cues.py \
 --cue_list ./data/cues/cues_danish.txt \
@@ -16,7 +15,7 @@ python tag_negation_cues.py \
 
 The script creates two files ```./examples/Pt#cues.jsonl``` and ```./examples/Pt#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
 
-### Predicting negation scopes given marked negation cues
+### 2) Predicting negation scopes given marked negation cues
 ## Training models
 Coming soon
 
