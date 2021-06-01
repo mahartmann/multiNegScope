@@ -1,6 +1,1 @@
-| Training data | Test data | | Test data | | Test data |
-| bio, sfuen| | iula   | nubes | french | 
-| ----------- | ----------- |
-| Header      | Title       |
-| Paragraph   | Text        |
-
+[negation.pdf](https://github.com/mahartmann/multiNegScope/files/6577575/negation.pdf)
