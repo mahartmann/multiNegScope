@@ -13,23 +13,23 @@ You can use our pretrained model to predict negation scopes in your data of inte
 ```
 python tag_negation_cues.py \
 --cue_list ./data/cues/cues_danish.txt \
---input_file ./examples/Pt.jsonl
+--input_file ./examples/example.jsonl
 ```
 
-The script creates two files ```./examples/Pt#cues.jsonl``` and ```./examples/Pt#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
+The script creates two files ```./examples/example#cues.jsonl``` and ```./examples/example#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
 
 ### 2) Predicting negation scopes given marked negation cues
-Download the pre-trained negation scope resolution model from and unzip it. To run the code as displayed below, put it in the ```./trained_model``` folder . 
+Download the pre-trained negation scope resolution model from and unzip it. 
 
 ```
 python predict_negscopes.py \
 --model_checkpoint ./pretrained_model_v1/model.pt  \
 --datapath ./examples \
---test_datasets Pt#cues.jsonl \
+--test_datasets example#cues.jsonl \
 --outdir ./examples
 ```
 
-The script creates two files ```./examples/Pt#cues#scopes.jsonl``` and ```./examples/Pt#cues#scopes.html```.
+The script creates two files ```./examples/example#cues#scopes.jsonl``` and ```./examples/example#cues#scopes.html```.
 
 
 ## Training models
