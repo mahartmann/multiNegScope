@@ -20,6 +20,7 @@ python tag_negation_cues.py \
 --cue_list ./data/cues/cues_danish.txt \
 --input_file ./examples/example.jsonl
 ```
+The predefined cue list should contain one cue per line (see ```./data/cues/cues_danish.txt```). Discontinuous cues can be indicated using the ```#``` symbol, and the code currently matches discontinuous cues with up to 6 tokens separating the different parts of the cue.
 
 The script creates two files ```./examples/example#cues.jsonl``` and ```./examples/example#cues.html```. The first can be used as input file for the negation scope resolution model, the latter visualizes the detected negation cues in red when opened in a web browser. 
 
