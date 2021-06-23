@@ -38,6 +38,15 @@ def mark_cue(matcher, doc, i, matches):
         tok.set_extension("clue", default=None, force=True)
         tok._.clue = 'CUE_{}_{}'.format(start,end)
 
+def mark_discont_cue(matcher, doc, i, matches):
+    match_id, start, end = matches[i]
+    target_words = set(matcher.vocab.strings[match_id].split('#'))
+    toks =  doc[start: end]
+    for tok in toks:
+        if tok.text in target_words:
+            tok.set_extension("clue", default=None, force=True)
+            tok._.clue = 'CUE_{}_{}'.format(start,end)
+
 
 
 def setup_matcher(triggers, matcher):
@@ -49,8 +58,20 @@ def setup_matcher(triggers, matcher):
     for elm in triggers:
         variants = [elm, elm[0].upper() + elm[1:], elm.upper()]
         for var in variants:
-            pattern = [{'ORTH': tok} for tok in var.split()]
-            matcher.add(var, [pattern], on_match=mark_cue)
+            # support for discontinuous cues. allow a maximum of x tokens between the parts of the discontinuous cue
+            x = 6
+            if '#' in var:
+                cues = var.split('#')
+                pattern = []
+                for i, cue in enumerate(cues):
+                    if i != 0:
+                        for _ in range(x):
+                            pattern.append({'OP': '?'})
+                    pattern.append({'ORTH': cue})
+                matcher.add(var, [pattern], on_match=mark_discont_cue)
+            else:
+                pattern = [{'ORTH': tok} for tok in var.split()]
+                matcher.add(var, [pattern], on_match=mark_cue)
 
 
 def process_doc(nlp, matcher, text, split_sents=False):
@@ -147,7 +168,7 @@ if __name__=="__main__":
     parser.add_argument('--cue_list',
                         default='./data/cues/cues_danish.txt')
     parser.add_argument('--input_file',
-                        default='./examples/Pt.jsonl')
+                        default='./examples/example.jsonl')
 
     args = parser.parse_args()
 

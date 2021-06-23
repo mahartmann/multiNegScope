@@ -1,21 +1,19 @@
-{"uid": 0, "seq": ["Har", "v\u00e6ret", "indlagt", "til", "video", "eeg-monitorering", "fra", "d.", "13", "til", "d.", "17.05.09.", "der", "blev", "observeret", "gentagne", "isolerede", "myoklonier", "i", "3", "forskellige", "muskelgrupper", "og", "2", "forskellige", "oejensymptomer,", "alle", "[CUE]", "uden", "eegrafisk", "aendring."], "sid": "3_0"}
-{"uid": 1, "seq": ["I", "oevrigt", "er", "der", "heller", "[CUE]", "ikke", "set", "interiktale", "eeg", "forandringer."], "sid": "4_0"}
-{"uid": 2, "seq": ["Han", "har", "vaeretsygemeldt", "og", "har", "[CUE]", "ikke", "kunnet", "komme", "tilbage", "til", "arbejdsmarkedet", "siden."], "sid": "6_0"}
-{"uid": 3, "seq": ["Dette", "har", "[CUE]", "ikke", "foert", "til", "anfaldsfrihed."], "sid": "8_0"}
-{"uid": 4, "seq": ["Han", "har", "[CUE]", "aldrig", "haft", "generaliserede", "tonisk-kliniske", "krampeanfald", "og", "aldrig", "tidligere", "haft", "epilepsi."], "sid": "10_0"}
-{"uid": 5, "seq": ["Han", "har", "aldrig", "haft", "generaliserede", "tonisk-kliniske", "krampeanfald", "og", "[CUE]", "aldrig", "tidligere", "haft", "epilepsi."], "sid": "10_1"}
-{"uid": 6, "seq": ["Paa", "det", "foreligende", "video", "eeg-optagelse,", "hvor", "der", "hverken", "er", "iktal", "el", "interiktale", "forandringer,", "kan", "det", "konkluderes", "at", "patienten", "[CUE]", "ikke", "lider", "af", "epilepsi,", "hverken", "klinisk", "eller", "eegrafisk."], "sid": "11_0"}
-{"uid": 7, "seq": ["Der", "er", "heller", "[CUE]", "ikke", "indikation", "for", "ae-behandling"], "sid": "12_0"}
-{"uid": 8, "seq": ["[CUE]", "Ingen", "nytilkomne", "forandringer."], "sid": "15_0"}
-{"uid": 9, "seq": ["Der", "har", "[CUE]", "ikke", "vaeret", "yderligere", "faenomener", "siden."], "sid": "17_0"}
-{"uid": 10, "seq": ["3.", "gennemgang", "allergi", "[CUE]", "ingen", "kendte", "medikamentelle."], "sid": "18_0"}
-{"uid": 11, "seq": ["Dispositioner", "[CUE]", "ingen", "kendte."], "sid": "19_0"}
-{"uid": 12, "seq": ["Tidligere", "[CUE]", "ingen", "feberkramper."], "sid": "20_0"}
-{"uid": 13, "seq": ["Bivirkninger", "[CUE]", "ingen", "klager."], "sid": "29_0"}
-{"uid": 14, "seq": ["Fortsat", "[CUE]", "ikke", "anfaldsfri."], "sid": "32_0"}
-{"uid": 15, "seq": ["Allergier:", "[CUE]", "ingen", "kendte."], "sid": "35_0"}
-{"uid": 16, "seq": ["Sagsbehandler", "i", "ydelsesenhed", "mener", "[CUE]", "ikke", "der", "foreligger", "langvarig", "lidelse", "side", "der", "ikke", "er", "stille", "diagnose", "jf."], "sid": "38_0"}
-{"uid": 17, "seq": ["Sagsbehandler", "i", "ydelsesenhed", "mener", "ikke", "der", "foreligger", "langvarig", "lidelse", "side", "der", "[CUE]", "ikke", "er", "stille", "diagnose", "jf."], "sid": "38_1"}
-{"uid": 18, "seq": ["Aktuelle:", "[CUE]", "ingen", "gaar", "kl", "4.", "haft", "4", "anfald."], "sid": "40_0"}
-{"uid": 19, "seq": ["Har", "[CUE]", "ikke", "frembudt", "andre", "symptomer", "udover", "at", "han", "ikke", "far", "sovet", "i", "natten", "til", "i", "gaar.ikke", "haft", "affoering", "i", "11/2", "doegn."], "sid": "41_0"}
-{"uid": 20, "seq": ["Har", "ikke", "frembudt", "andre", "symptomer", "udover", "at", "han", "[CUE]", "ikke", "far", "sovet", "i", "natten", "til", "i", "gaar.ikke", "haft", "affoering", "i", "11/2", "doegn."], "sid": "41_1"}
+{"uid": 0, "seq": ["I", "oevrigt", "er", "der", "heller", "[CUE]", "ikke", "set", "interiktale", "eeg", "forandringer."], "sid": "4_0"}
+{"uid": 1, "seq": ["Han", "har", "vaeretsygemeldt", "og", "har", "[CUE]", "ikke", "kunnet", "komme", "tilbage", "til", "arbejdsmarkedet", "siden."], "sid": "6_0"}
+{"uid": 2, "seq": ["Dette", "har", "[CUE]", "ikke", "foert", "til", "anfaldsfrihed."], "sid": "8_0"}
+{"uid": 3, "seq": ["Paa", "det", "foreligende", "video", "eeg-optagelse,", "hvor", "der", "hverken", "er", "iktal", "el", "interiktale", "forandringer,", "kan", "det", "konkluderes", "at", "patienten", "ikke", "lider", "af", "epilepsi,", "[CUE]", "hverken", "klinisk", "[CUE]", "eller", "eegrafisk."], "sid": "11_0"}
+{"uid": 4, "seq": ["Paa", "det", "foreligende", "video", "eeg-optagelse,", "hvor", "der", "hverken", "er", "iktal", "el", "interiktale", "forandringer,", "kan", "det", "konkluderes", "at", "patienten", "[CUE]", "ikke", "lider", "af", "epilepsi,", "hverken", "klinisk", "eller", "eegrafisk."], "sid": "11_1"}
+{"uid": 5, "seq": ["Der", "er", "heller", "[CUE]", "ikke", "indikation", "for", "ae-behandling"], "sid": "12_0"}
+{"uid": 6, "seq": ["[CUE]", "Ingen", "nytilkomne", "forandringer."], "sid": "15_0"}
+{"uid": 7, "seq": ["Der", "har", "[CUE]", "ikke", "vaeret", "yderligere", "faenomener", "siden."], "sid": "17_0"}
+{"uid": 8, "seq": ["3.", "gennemgang", "allergi", "[CUE]", "ingen", "kendte", "medikamentelle."], "sid": "18_0"}
+{"uid": 9, "seq": ["Dispositioner", "[CUE]", "ingen", "kendte."], "sid": "19_0"}
+{"uid": 10, "seq": ["Tidligere", "[CUE]", "ingen", "feberkramper."], "sid": "20_0"}
+{"uid": 11, "seq": ["Bivirkninger", "[CUE]", "ingen", "klager."], "sid": "29_0"}
+{"uid": 12, "seq": ["Fortsat", "[CUE]", "ikke", "anfaldsfri."], "sid": "32_0"}
+{"uid": 13, "seq": ["Allergier:", "[CUE]", "ingen", "kendte."], "sid": "35_0"}
+{"uid": 14, "seq": ["Sagsbehandler", "i", "ydelsesenhed", "mener", "[CUE]", "ikke", "der", "foreligger", "langvarig", "lidelse", "side", "der", "ikke", "er", "stille", "diagnose", "jf."], "sid": "38_0"}
+{"uid": 15, "seq": ["Sagsbehandler", "i", "ydelsesenhed", "mener", "ikke", "der", "foreligger", "langvarig", "lidelse", "side", "der", "[CUE]", "ikke", "er", "stille", "diagnose", "jf."], "sid": "38_1"}
+{"uid": 16, "seq": ["Aktuelle:", "[CUE]", "ingen", "gaar", "kl", "4.", "haft", "4", "anfald."], "sid": "40_0"}
+{"uid": 17, "seq": ["Har", "ikke", "frembudt", "andre", "symptomer", "udover", "at", "han", "[CUE]", "ikke", "far", "sovet", "i", "natten", "til", "i", "gaar.ikke", "haft", "affoering", "i", "11/2", "doegn."], "sid": "41_0"}
+{"uid": 18, "seq": ["Har", "[CUE]", "ikke", "frembudt", "andre", "symptomer", "udover", "at", "han", "ikke", "far", "sovet", "i", "natten", "til", "i", "gaar.ikke", "haft", "affoering", "i", "11/2", "doegn."], "sid": "41_1"}
